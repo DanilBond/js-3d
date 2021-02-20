@@ -15,10 +15,17 @@ const scene = new THREE.Scene();
 
          const renderer = new THREE.WebGLRenderer({canvas, alpha: true,});
 
+         let stepId = 0;
+
          let animCameraToNoise = false;
 
+         let mars = null;
+
          let step_1 = null;
+         let step_1_2 = null;
          let step_2 = null;
+         let step_2_2 = null;
+         let engine = null;
          let noice = null;
          
 
@@ -26,9 +33,16 @@ const scene = new THREE.Scene();
          scene.add(Dlight);
          scene.add(Dlight.target);
 
+         let Step_1_Id = 0;
+         let Step_2_Id = 0;
+
          AddObject("/models/NoiseSingle/Noise.gltf", 'noise');
          AddObject("/models/1Step/1/1.gltf", '1step');
+         AddObject("/models/1Step/2/2.gltf", '1step2');
          AddObject("/models/2Step/1/1.gltf", '2step');
+         AddObject("/models/2Step/2/2.gltf", '2step2');
+         AddObject("/models/Engines/1/1.gltf", 'engine');
+         AddObject("/models/Mars/mars.gltf", 'mars');
 
        
 
@@ -42,9 +56,39 @@ const scene = new THREE.Scene();
             step_1.position.set(0,-7,0);
         if (noice != null && step_2 != null)
             step_2.position.set(0,-17,0);
+        if (noice != null && step_1_2 != null)
+            step_1_2.position.set(0,-7,0);
+        if (noice != null && step_2_2 != null)
+            step_2_2.position.set(0,-16.5,0);
+        if (noice != null && engine != null)
+            engine.position.set(0,-17,0);
 
         if(noice != null){
           noice.rotation.y += 0.003;
+        }
+        if(mars != null){
+          mars.rotation.y -= 0.001;
+        }
+
+        switch(Step_1_Id){
+            case 0:
+                step_1.visible = true;
+                step_1_2.visible = false;
+            break;
+            case 1:
+                step_1.visible = false;
+                step_1_2.visible = true;
+            break;
+        }
+        switch(Step_2_Id){
+            case 0:
+                step_2.visible = true;
+                step_2_2.visible = false;
+            break;
+            case 1:
+                step_2.visible = false;
+                step_2_2.visible = true;
+            break;
         }
 
         renderer.render(scene, camera);
@@ -52,11 +96,119 @@ const scene = new THREE.Scene();
         TWEEN.update(time);
     }
     
-    document.body.addEventListener('keypress', function(e){
-       if(e.code == "KeyM"){
-           anim(camera, 2.1, 0, 10, 1000);
-       } 
+    document.querySelector("#StepP").addEventListener('click', function(e){
+    switch(stepId){
+        case 0:
+            stepId = 1;
+            checkForAnim();
+            break;
+        case 1:
+            stepId = 2;
+            checkForAnim();
+            break;
+        case 2:
+            stepId = 3;
+            checkForAnim();
+            break;
+        case 3:
+            stepId = 0;
+            checkForAnim();
+            break;
+    }
     });
+    
+    document.querySelector("#StepM").addEventListener('click', function(e){
+        switch(stepId){
+            case 3:
+                stepId = 2;
+                checkForAnim();
+                break;
+            case 2:
+                stepId = 1;
+                checkForAnim();
+                break;
+            case 1:
+                stepId = 0;
+                checkForAnim();
+                break;
+            case 0:
+                stepId = 3;
+                checkForAnim();
+                break;
+        }
+    });
+
+
+    document.querySelector("#DetailP").addEventListener('click', function(e){
+        switch(stepId){
+            case 1:
+                switch(Step_1_Id){
+                    case 0: 
+                    Step_1_Id = 1;
+                    break;
+                    case 1: 
+                    Step_1_Id = 0;
+                    break;
+                }
+                break;
+            case 2:
+                switch(Step_2_Id){
+                    case 0: 
+                    Step_2_Id = 1;
+                    break;
+                    case 1: 
+                    Step_2_Id = 0;
+                    break;
+                }
+                break;
+        }
+        });
+    document.querySelector("#DetailM").addEventListener('click', function(e){
+        switch(stepId){
+            case 1:
+                switch(Step_1_Id){
+                    case 0: 
+                    Step_1_Id = 1;
+                    break;
+                    case 1: 
+                    Step_1_Id = 0;
+                    break;
+                }
+                break;
+            case 2:
+                switch(Step_2_Id){
+                    case 0: 
+                    Step_2_Id = 1;
+                    break;
+                    case 1: 
+                    Step_2_Id = 0;
+                    break;
+                }
+                break;
+        }
+        });
+
+
+    function checkForAnim(){
+        switch(stepId){
+            case 0:
+                document.querySelector("#StepTxt").innerText = "Full";
+            anim(camera, 2.5,-8,17, 1000);
+            break;
+            case 1:
+                document.querySelector("#StepTxt").innerText = "First";
+            anim(camera, 2.1, -2, 10, 1000);
+            break;
+            case 2:
+                document.querySelector("#StepTxt").innerText = "Second";
+            anim(camera, 2.1, -11, 10, 1000);
+            break;
+            case 3:
+                document.querySelector("#StepTxt").innerText = "Engine";
+            anim(camera, 2.1, -16, 10, 1000);
+            break;
+        }
+    }
     
     function anim(Obj, X,Y,Z, Time){
         let coords = {x: Obj.position.x, y: Obj.position.y, z: Obj.position.z} // Start at (0, 0)
@@ -88,8 +240,20 @@ const scene = new THREE.Scene();
               case "1step":   
                 step_1 = root;
               break;
+              case "1step2":   
+                step_1_2 = root;
+              break;
               case "2step":   
                 step_2 = root;
+              break;
+              case "2step2":   
+                step_2_2 = root;
+              break;
+              case "engine":   
+                engine = root;
+              break;
+              case "mars":   
+                mars = root;
               break;
              }
         });
@@ -126,7 +290,13 @@ const scene = new THREE.Scene();
         let timeout = setTimeout(function(){
             noice.add(step_1);
             noice.add(step_2);
-            camera.position.set(2.5,-5,12);
+            noice.add(step_1_2);
+            noice.add(step_2_2);
+            noice.add(engine);
+            mars.scale.set(.5,.5,.5);
+            step_2_2.scale.set(.75,.75,.75);
+            mars.position.set(20, -6, -55);
+            camera.position.set(2.5,-8,17);
             Dlight.position.set(5,10,2);
         },2000);
   
