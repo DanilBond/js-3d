@@ -8,8 +8,27 @@
     <title>Document</title>
 </head>
 <body>
-    <canvas id="c"></canvas>
-    <script type="module" src="./scripts/main.js"></script>
+   
+    <div class="Controls">
+        <div class="CPan1">
+            <div class="CPanLabel">
+            <button onclick="anim()"><</button>
+            <span>Step</span>
+            <button>></button>
+        </div>
+            <div class="CPanLabel">
+            <button><</button>
+            <span>Detail</span>
+            <button>></button>
+        </div>
+        </div>
+    </div>
+
+    <canvas></canvas>
     
+    <script src="./scripts/three.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/17.2.0/Tween.js"></script>
+    <script src="./scripts/GLTFLoader.js"></script>
+    <script src="./scripts/main.js"></script>
 </body>
 </html>
